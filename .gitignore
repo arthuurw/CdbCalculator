@@ -1,0 +1,120 @@
+# ============================================================================
+# .NET
+# ============================================================================
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+[Tt]est[Rr]esult*/
+[Dd]ebugPS/
+*.VisualState.xml
+TestResult.xml
+[Bb]uild[Ll]og.*
+
+## MSBuild
+*.metaproj
+*.metaproj.tmp
+
+## NuGet
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nupkg
+**/packages/repositories.config
+project.lock.json
+project.fragment.lock.json
+
+## .NET Core
+artifacts/
+
+## User-specific files
+*.DotSettings.user
+
+## StyleCop
+StyleCopReport.xml
+
+## Code coverage
+**/coverage-report/
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+lcov.info
+
+## JetBrains Rider
+.idea/
+*.sln.iml
+
+## Publish output
+publish/
+
+# ============================================================================
+# Angular
+# ============================================================================
+
+## Dependencies
+node_modules/
+
+## Build output
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+## Cache
+.angular/
+.sass-cache/
+
+## IDE / Editors
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+## Misc
+/.angular/cache
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+## Environment files (descomente se necessário)
+# **/src/environments/environment.prod.ts
+
+## Test / Coverage
+/coverage/
+
+## e2e
+/e2e/*.js
+/e2e/*.map
+
+## Compodoc
+/documentation/
+
+# ============================================================================
+# General
+# ============================================================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
