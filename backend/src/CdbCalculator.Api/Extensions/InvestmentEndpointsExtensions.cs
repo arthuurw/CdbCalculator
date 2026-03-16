@@ -1,6 +1,12 @@
-﻿namespace CdbCalculator.Api.Extensions;
+﻿using CdbCalculator.Api.Endpoints.Cdb;
 
-public class InvestmentEndpointsExtensions
+namespace CdbCalculator.Api.Extensions;
+
+public static class InvestmentEndpointsExtensions
 {
-
+    public static IEndpointRouteBuilder MapInvestmentEndpoints(this IEndpointRouteBuilder app)
+    {
+        app.MapCalculateCdbEndpoint();
+        return app;
+    }
 }
