@@ -9,6 +9,12 @@ public static class GrossCdbCalculator
 
     public static CdbGrossResult Calculate(decimal initialAmount, int months)
     {
+        if (initialAmount <= 0)
+            throw new ArgumentOutOfRangeException(nameof(initialAmount), initialAmount, "Initial amount must be greater than zero.");
+
+        if (months <= 0)
+            throw new ArgumentOutOfRangeException(nameof(months), months, "Months must be greater than zero.");
+
         var monthlyFactor = 1 + (Cdi * Tb);
         var grossAmount = initialAmount;
 

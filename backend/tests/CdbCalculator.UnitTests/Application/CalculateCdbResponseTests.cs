@@ -2,7 +2,7 @@
 
 namespace CdbCalculator.UnitTests.Application;
 
-public class CalculateCdbResponseTests
+public sealed class CalculateCdbResponseTests
 {
     [Fact]
     public void Constructor_ShouldAssignGrossAndNetAmounts()

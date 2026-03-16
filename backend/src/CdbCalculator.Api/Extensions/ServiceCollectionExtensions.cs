@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<ICalculateCdbService, CalculateCdbService>();
+        services.AddSingleton<ICalculateCdbService, CalculateCdbService>();
 
         return services;
     }

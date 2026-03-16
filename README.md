@@ -82,16 +82,17 @@ The system simulates a CDB investment based on the formula provided in the chall
 
 ## Formula
 
-**VF = VI × [1 + (CDI × TB)]**
+**VFₙ = VI × [1 + (CDI × TB)]ⁿ**
 
 Where:
 
 | Symbol | Description |
 |------|-------------|
-| VF | Final value |
+| VFₙ | Final value after n months |
 | VI | Initial investment value |
 | CDI | Monthly CDI rate |
 | TB | Bank percentage over CDI |
+| n | Number of months |
 
 For this exercise the following fixed values are used:
 
@@ -100,7 +101,7 @@ For this exercise the following fixed values are used:
 | CDI | 0.9% |
 | TB | 108% |
 
-The investment grows using **monthly compound interest**, meaning the result of each month becomes the base for the next month.
+The investment grows using **monthly compound interest**, meaning the result of each month becomes the base for the next month. The formula is applied iteratively for each month.
 
 ---
 
@@ -173,7 +174,6 @@ Example error response:
 
 ```json
 {
-  "type": "about:blank",
   "title": "Invalid request",
   "status": 400,
   "detail": "Initial amount must be greater than zero.",
@@ -192,9 +192,9 @@ Possible responses:
 
 # API Documentation
 
-Swagger documentation is automatically generated.
+Swagger documentation is automatically generated and available only in the **Development** environment.
 
-After starting the application, access:
+After starting the application in Development mode, access:
 
 **https://localhost:{port}/swagger**
 
@@ -230,7 +230,7 @@ Clone the repository locally:
 
 **git clone <repository-url>**
 
-Navigate to the project directory.
+Navigate to the root directory of the repository. All subsequent commands must be executed from this directory.
 
 ---
 
@@ -367,3 +367,6 @@ Error responses follow the ProblemDetails format defined by RFC 7807.
 # Author
 
 This project was developed as part of a technical challenge.
+
+**Arthur Webster Moreira**
+arthurwebster01@gmail.com

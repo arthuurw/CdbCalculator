@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Text.Json;
 
 namespace CdbCalculator.Api.Middleware;
 
@@ -31,6 +30,8 @@ public sealed class ExceptionHandlingMiddleware(
         }
         catch (ArgumentException ex)
         {
+            _logger.LogWarning(ex, "Validation error occurred.");
+
             await WriteProblemDetailsAsync(
                 context,
                 HttpStatusCode.BadRequest,

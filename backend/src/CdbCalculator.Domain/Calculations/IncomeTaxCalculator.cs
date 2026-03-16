@@ -36,6 +36,7 @@ public static class IncomeTaxCalculator
                 return TaxRate;
             }
         }
-        throw new InvalidOperationException("No tax bracket found for the provided term.");
+
+        return TaxBrackets[^1].TaxRate;
     }
 }
