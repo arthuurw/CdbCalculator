@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/">
+    <Project Path="backend/src/CdbCalculator.Api/CdbCalculator.Api.csproj" />
+    <Project Path="backend/src/CdbCalculator.Application/CdbCalculator.Application.csproj" />
+    <Project Path="backend/src/CdbCalculator.Domain/CdbCalculator.Domain.csproj" />
+  </Folder>
+  <Folder Name="/backend/tests/">
+    <Project Path="backend/tests/CdbCalculator.UnitTests/CdbCalculator.UnitTests.csproj" />
+  </Folder>
+</Solution>
