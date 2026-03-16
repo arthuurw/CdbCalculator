@@ -1,12 +1,11 @@
 <Solution>
   <Folder Name="/backend/" />
   <Folder Name="/backend/src/">
-    <Project Path="CdbCalculator.Api/CdbCalculator.Api.csproj" Id="b216a47c-0755-4cca-886b-89cba8439cde" />
-    <Project Path="CdbCalculator.Application/CdbCalculator.Application.csproj" Id="bb829a36-2158-4376-a0b6-fbe20b8f23c4" />
-    <Project Path="CdbCalculator.Domain/CdbCalculator.Domain.csproj" Id="c3f6b2ad-c14d-4e86-a87a-d62bb3fa7458" />
+    <Project Path="backend/src/CdbCalculator.Api/CdbCalculator.Api.csproj" />
+    <Project Path="backend/src/CdbCalculator.Application/CdbCalculator.Application.csproj" />
+    <Project Path="backend/src/CdbCalculator.Domain/CdbCalculator.Domain.csproj" />
   </Folder>
   <Folder Name="/backend/tests/">
-    <Project Path="CdbCalculator.UnitTests/CdbCalculator.UnitTests.csproj" Id="49fdb09d-8c00-4eaf-a413-56ed06f07586" />
+    <Project Path="backend/tests/CdbCalculator.UnitTests/CdbCalculator.UnitTests.csproj" />
   </Folder>
-  <Folder Name="/frontend/" />
 </Solution>
