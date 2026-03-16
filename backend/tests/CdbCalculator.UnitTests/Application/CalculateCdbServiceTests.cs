@@ -44,50 +44,6 @@ public sealed class CalculateCdbServiceTests
     }
 
     [Fact]
-    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenInitialAmountIsZero()
-    {
-        CalculateCdbRequest request = new(0m, 12);
-
-        ArgumentOutOfRangeException exception =
-            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.Calculate(request));
-
-        Assert.Equal("initialAmount", exception.ParamName);
-    }
-
-    [Fact]
-    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenInitialAmountIsNegative()
-    {
-        CalculateCdbRequest request = new(-100m, 12);
-
-        ArgumentOutOfRangeException exception =
-            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.Calculate(request));
-
-        Assert.Equal("initialAmount", exception.ParamName);
-    }
-
-    [Fact]
-    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenMonthsIsOne()
-    {
-        CalculateCdbRequest request = new(1000m, 1);
-
-        ArgumentOutOfRangeException exception =
-            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.Calculate(request));
-
-        Assert.Equal("months", exception.ParamName);
-    }
-
-    [Fact]
-    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenMonthsIsZero()
-    {
-        CalculateCdbRequest request = new(1000m, 0);
-
-        ArgumentOutOfRangeException exception =
-            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.Calculate(request));
-
-        Assert.Equal("months", exception.ParamName);
-    }
-
-    [Fact]
     public void Calculate_ShouldReturnRoundedAmounts()
     {
         CalculateCdbRequest request = new(1234.56m, 7);

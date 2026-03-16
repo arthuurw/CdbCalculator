@@ -51,18 +51,6 @@ public sealed class GrossCdbCalculatorTests
     }
 
     [Fact]
-    public void Calculate_ShouldReturnSameAmount_WhenMonthsIsZero()
-    {
-        decimal initialAmount = 1000m;
-        int months = 0;
-
-        CdbGrossResult result = GrossCdbCalculator.Calculate(initialAmount, months);
-
-        Assert.Equal(1000m, result.InitialAmount);
-        Assert.Equal(1000m, result.GrossAmount);
-    }
-
-    [Fact]
     public void Calculate_ShouldReturnGreaterGrossAmount_WhenMonthsIncrease()
     {
         decimal initialAmount = 1000m;
@@ -82,5 +70,41 @@ public sealed class GrossCdbCalculatorTests
         CdbGrossResult result = GrossCdbCalculator.Calculate(initialAmount, months);
 
         Assert.Equal(Math.Round(result.GrossAmount, 2, MidpointRounding.ToEven), result.GrossAmount);
+    }
+
+    [Fact]
+    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenInitialAmountIsZero()
+    {
+        ArgumentOutOfRangeException exception =
+            Assert.Throws<ArgumentOutOfRangeException>(() => GrossCdbCalculator.Calculate(0m, 2));
+
+        Assert.Equal("initialAmount", exception.ParamName);
+    }
+
+    [Fact]
+    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenInitialAmountIsNegative()
+    {
+        ArgumentOutOfRangeException exception =
+            Assert.Throws<ArgumentOutOfRangeException>(() => GrossCdbCalculator.Calculate(-100m, 2));
+
+        Assert.Equal("initialAmount", exception.ParamName);
+    }
+
+    [Fact]
+    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenMonthsIsZero()
+    {
+        ArgumentOutOfRangeException exception =
+            Assert.Throws<ArgumentOutOfRangeException>(() => GrossCdbCalculator.Calculate(1000m, 0));
+
+        Assert.Equal("months", exception.ParamName);
+    }
+
+    [Fact]
+    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenMonthsIsNegative()
+    {
+        ArgumentOutOfRangeException exception =
+            Assert.Throws<ArgumentOutOfRangeException>(() => GrossCdbCalculator.Calculate(1000m, -1));
+
+        Assert.Equal("months", exception.ParamName);
     }
 }
