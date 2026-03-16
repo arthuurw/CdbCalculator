@@ -12,14 +12,16 @@ The solution follows a layered architecture separating the HTTP layer, applicati
 
 The backend is organized as follows:
 
+```text
 backend
- ├─ src
- │   ├─ CdbCalculator.Api
- │   ├─ CdbCalculator.Application
- │   └─ CdbCalculator.Domain
- │
- └─ tests
-     └─ CdbCalculator.UnitTests
+├─ src
+│  ├─ CdbCalculator.Api
+│  ├─ CdbCalculator.Application
+│  └─ CdbCalculator.Domain
+│
+└─ tests
+   └─ CdbCalculator.UnitTests
+```
 
 ---
 
