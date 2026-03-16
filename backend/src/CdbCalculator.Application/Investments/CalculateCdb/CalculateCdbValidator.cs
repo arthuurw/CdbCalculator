@@ -4,16 +4,28 @@ public static class CalculateCdbValidator
 {
     public static void Validate(CalculateCdbRequest request)
     {
-        ArgumentNullException.ThrowIfNull(nameof(request));
+        ArgumentNullException.ThrowIfNull(request);
 
-        if (request.InitialAmount <= 0)
+        decimal initialAmount = request.InitialAmount;
+        int months = request.Months;
+
+        ValidateGreaterThanZero(initialAmount, nameof(initialAmount), "Initial amount must be greater than zero.");
+        ValidateGreaterThanOne(months, nameof(months), "Months must be greater than one.");
+    }
+
+    private static void ValidateGreaterThanZero(decimal value, string parameterName, string message)
+    {
+        if (value <= 0)
         {
-            throw new ArgumentException("Initial amount must be greater than zero.", nameof(request));
+            throw new ArgumentOutOfRangeException(parameterName, value, message);
         }
+    }
 
-        if (request.Months <= 1)
+    private static void ValidateGreaterThanOne(int value, string parameterName, string message)
+    {
+        if (value <= 1)
         {
-            throw new ArgumentException("Months must be greater than one.", nameof(request));
+            throw new ArgumentOutOfRangeException(parameterName, value, message);
         }
     }
 }

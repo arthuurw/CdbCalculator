@@ -1,67 +1,71 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Text.Json;
 
 namespace CdbCalculator.Api.Middleware;
 
-public sealed class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+/// <summary>
+/// Middleware responsible for handling unhandled exceptions globally
+/// and converting them into standardized HTTP responses.
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ExceptionHandlingMiddleware"/> class.
+/// </remarks>
+/// <param name="next">The next middleware in the pipeline.</param>
+/// <param name="logger">The logger instance.</param>
+public sealed class ExceptionHandlingMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionHandlingMiddleware> logger)
 {
     private readonly RequestDelegate _next = next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
 
+    /// <summary>
+    /// Processes the HTTP request and handles unhandled exceptions.
+    /// </summary>
     public async Task InvokeAsync(HttpContext context)
     {
         try
         {
             await _next(context);
         }
-        catch (ArgumentNullException exception)
+        catch (ArgumentException ex)
         {
-            _logger.LogWarning(exception, "A null argument was provided.");
-
             await WriteProblemDetailsAsync(
                 context,
-                StatusCodes.Status400BadRequest,
+                HttpStatusCode.BadRequest,
                 "Invalid request",
-                exception.Message);
+                ex.Message);
         }
-        catch (ArgumentException exception)
+        catch (Exception ex)
         {
-            _logger.LogWarning(exception, "An invalid argument was provided.");
+            _logger.LogError(ex, "Unhandled exception occurred.");
 
             await WriteProblemDetailsAsync(
                 context,
-                StatusCodes.Status400BadRequest,
-                "Invalid request",
-                exception.Message);
-        }
-        catch (Exception exception)
-        {
-            _logger.LogError(exception, "An unexpected error occurred.");
-
-            await WriteProblemDetailsAsync(
-                context,
-                StatusCodes.Status500InternalServerError,
-                "Internal server error",
-                "An unexpected error occurred while processing the request.");
+                HttpStatusCode.InternalServerError,
+                "Internal Server Error",
+                "An unexpected error occurred.");
         }
     }
 
     private static async Task WriteProblemDetailsAsync(
         HttpContext context,
-        int statusCode,
+        HttpStatusCode statusCode,
         string title,
         string detail)
     {
-        context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/problem+json";
+        context.Response.StatusCode = (int)statusCode;
 
-        var problemDetails = new ProblemDetails
+        var problem = new ProblemDetails
         {
-            Status = statusCode,
             Title = title,
             Detail = detail,
+            Status = (int)statusCode,
             Instance = context.Request.Path
         };
 
-        await context.Response.WriteAsJsonAsync(problemDetails);
+        await context.Response.WriteAsJsonAsync(problem);
     }
 }
