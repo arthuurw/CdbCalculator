@@ -1,6 +1,6 @@
 ﻿namespace CdbCalculator.Application.Investments.CalculateCdb;
 
-public class CalculateCdbRequest
-{
-
-}
+public sealed record CalculateCdbRequest(
+    decimal InitialAmount,
+    int Months
+    );

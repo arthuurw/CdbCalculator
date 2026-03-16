@@ -1,6 +1,6 @@
 ﻿namespace CdbCalculator.Application.Investments.CalculateCdb;
 
-public class CalculateCdbResponse
-{
-
-}
+public sealed record CalculateCdbResponse(
+    decimal GrossAmount,
+    decimal NetAmount
+    );
