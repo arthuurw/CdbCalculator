@@ -17,16 +17,25 @@ public sealed class GrossCdbCalculatorTests
     }
 
     [Fact]
-    public void Calculate_ShouldReturnCorrectGrossAmount_ForOneMonth()
+    public void Calculate_ShouldReturnCorrectGrossAmount_ForTwoMonths()
     {
         decimal initialAmount = 1000m;
-        int months = 1;
+        int months = 2;
 
         CdbGrossResult result = GrossCdbCalculator.Calculate(initialAmount, months);
 
-        decimal expected = Math.Round(1000m * 1.00972m, 2, MidpointRounding.ToEven);
+        decimal expected = Math.Round(1000m * 1.00972m * 1.00972m, 2, MidpointRounding.AwayFromZero);
 
         Assert.Equal(expected, result.GrossAmount);
+    }
+
+    [Fact]
+    public void Calculate_ShouldThrowArgumentOutOfRangeException_WhenMonthsIsOne()
+    {
+        ArgumentOutOfRangeException exception =
+            Assert.Throws<ArgumentOutOfRangeException>(() => GrossCdbCalculator.Calculate(1000m, 1));
+
+        Assert.Equal("months", exception.ParamName);
     }
 
     [Fact]
@@ -45,7 +54,7 @@ public sealed class GrossCdbCalculatorTests
             expected *= factor;
         }
 
-        expected = Math.Round(expected, 2, MidpointRounding.ToEven);
+        expected = Math.Round(expected, 2, MidpointRounding.AwayFromZero);
 
         Assert.Equal(expected, result.GrossAmount);
     }
@@ -69,7 +78,7 @@ public sealed class GrossCdbCalculatorTests
 
         CdbGrossResult result = GrossCdbCalculator.Calculate(initialAmount, months);
 
-        Assert.Equal(Math.Round(result.GrossAmount, 2, MidpointRounding.ToEven), result.GrossAmount);
+        Assert.Equal(Math.Round(result.GrossAmount, 2, MidpointRounding.AwayFromZero), result.GrossAmount);
     }
 
     [Fact]

@@ -9,13 +9,13 @@ public static class CalculateCdbValidator
         decimal initialAmount = request.InitialAmount;
         int months = request.Months;
 
-        ValidateGreaterThanZero(initialAmount, nameof(initialAmount), "Initial amount must be greater than zero.");
-        ValidateGreaterThanOne(months, nameof(months), "Months must be greater than one.");
+        ValidateMinimumAmount(initialAmount, nameof(initialAmount), "O valor inicial deve ser no mínimo R$0,01.");
+        ValidateGreaterThanOne(months, nameof(months), "O prazo deve ser maior que um mês.");
     }
 
-    private static void ValidateGreaterThanZero(decimal value, string parameterName, string message)
+    private static void ValidateMinimumAmount(decimal value, string parameterName, string message)
     {
-        if (value <= 0)
+        if (value < 0.01m)
         {
             throw new ArgumentOutOfRangeException(parameterName, value, message);
         }

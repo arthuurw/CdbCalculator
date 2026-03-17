@@ -35,7 +35,7 @@ public sealed class ExceptionHandlingMiddleware(
             await WriteProblemDetailsAsync(
                 context,
                 HttpStatusCode.BadRequest,
-                "Invalid request",
+                "Requisição inválida",
                 ex.Message);
         }
         catch (Exception ex)
@@ -45,8 +45,8 @@ public sealed class ExceptionHandlingMiddleware(
             await WriteProblemDetailsAsync(
                 context,
                 HttpStatusCode.InternalServerError,
-                "Internal Server Error",
-                "An unexpected error occurred.");
+                "Erro interno do servidor",
+                "Ocorreu um erro interno inesperado.");
         }
     }
 

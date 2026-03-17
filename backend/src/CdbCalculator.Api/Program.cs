@@ -11,6 +11,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddApplicationServices();
 builder.Services.AddProblemDetails();
+builder.Services.AddCorsConfiguration(builder.Configuration);
 
 var app = builder.Build();
 
@@ -21,6 +22,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCorsConfiguration();
 
 app.UseHttpsRedirection();
 
