@@ -20,14 +20,8 @@ jobs:
         with:
           dotnet-version: 8.x
 
-      - name: Restore dependencies
-        run: dotnet restore backend/tests/CdbCalculator.UnitTests
-
-      - name: Build
-        run: dotnet build backend/tests/CdbCalculator.UnitTests --no-restore
-
       - name: Run tests
-        run: dotnet test backend/tests/CdbCalculator.UnitTests --no-build
+        run: dotnet test backend/tests/CdbCalculator.UnitTests
 
   frontend:
     name: Frontend — Lint & Test
@@ -41,12 +35,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: frontend/cdbcalculator/package-lock.json
 
       - name: Install dependencies
         working-directory: frontend/cdbcalculator
-        run: npm ci
+        run: npm install
 
       - name: Lint
         working-directory: frontend/cdbcalculator
@@ -54,4 +46,6 @@ jobs:
 
       - name: Run tests
         working-directory: frontend/cdbcalculator
+        env:
+          CHROMIUM_FLAGS: --no-sandbox --disable-setuid-sandbox
         run: npm test -- --watch=false --browsers=ChromeHeadless
