@@ -1,4 +1,4 @@
-﻿using CdbCalculator.Application.Investments.CalculateCdb;
+using CdbCalculator.Application.Investments.CalculateCdb;
 
 namespace CdbCalculator.UnitTests.Application;
 
@@ -35,6 +35,27 @@ public sealed class CalculateCdbValidatorTests
             Assert.Throws<ArgumentOutOfRangeException>(() => CalculateCdbValidator.Validate(request));
 
         Assert.Equal("initialAmount", exception.ParamName);
+    }
+
+    [Fact]
+    public void Validate_ShouldThrowArgumentOutOfRangeException_WhenInitialAmountIsBelowMinimum()
+    {
+        CalculateCdbRequest request = new(0.001m, 12);
+
+        ArgumentOutOfRangeException exception =
+            Assert.Throws<ArgumentOutOfRangeException>(() => CalculateCdbValidator.Validate(request));
+
+        Assert.Equal("initialAmount", exception.ParamName);
+    }
+
+    [Fact]
+    public void Validate_ShouldNotThrow_WhenInitialAmountIsExactlyMinimum()
+    {
+        CalculateCdbRequest request = new(0.01m, 12);
+
+        Exception? exception = Record.Exception(() => CalculateCdbValidator.Validate(request));
+
+        Assert.Null(exception);
     }
 
     [Fact]

@@ -30,7 +30,7 @@ public sealed class IncomeTaxCalculatorTests
         CdbNetResult result = IncomeTaxCalculator.Calculate(grossResult, months);
 
         decimal earnings = 100m;
-        decimal expectedTaxAmount = Math.Round(earnings * 0.225m, 2, MidpointRounding.ToEven);
+        decimal expectedTaxAmount = Math.Round(earnings * 0.225m, 2, MidpointRounding.AwayFromZero);
 
         Assert.Equal(expectedTaxAmount, result.TaxAmount);
     }
@@ -44,8 +44,8 @@ public sealed class IncomeTaxCalculatorTests
         CdbNetResult result = IncomeTaxCalculator.Calculate(grossResult, months);
 
         decimal earnings = 100m;
-        decimal taxAmount = Math.Round(earnings * 0.20m, 2, MidpointRounding.ToEven);
-        decimal expectedNetAmount = Math.Round(1100m - taxAmount, 2, MidpointRounding.ToEven);
+        decimal taxAmount = Math.Round(earnings * 0.20m, 2, MidpointRounding.AwayFromZero);
+        decimal expectedNetAmount = Math.Round(1100m - taxAmount, 2, MidpointRounding.AwayFromZero);
 
         Assert.Equal(expectedNetAmount, result.NetAmount);
     }
@@ -80,7 +80,7 @@ public sealed class IncomeTaxCalculatorTests
 
         CdbNetResult result = IncomeTaxCalculator.Calculate(grossResult, months);
 
-        Assert.Equal(Math.Round(result.TaxAmount, 2, MidpointRounding.ToEven), result.TaxAmount);
-        Assert.Equal(Math.Round(result.NetAmount, 2, MidpointRounding.ToEven), result.NetAmount);
+        Assert.Equal(Math.Round(result.TaxAmount, 2, MidpointRounding.AwayFromZero), result.TaxAmount);
+        Assert.Equal(Math.Round(result.NetAmount, 2, MidpointRounding.AwayFromZero), result.NetAmount);
     }
 }

@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main, feature/**]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  backend:
+    name: Backend — Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Run tests
+        run: dotnet test backend/tests/CdbCalculator.UnitTests
+
+  frontend:
+    name: Frontend — Lint & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: frontend/cdbcalculator
+        run: npm install
+
+      - name: Lint
+        working-directory: frontend/cdbcalculator
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: frontend/cdbcalculator
+        env:
+          CHROMIUM_FLAGS: --no-sandbox --disable-setuid-sandbox
+        run: npm test -- --watch=false --browsers=ChromeHeadless

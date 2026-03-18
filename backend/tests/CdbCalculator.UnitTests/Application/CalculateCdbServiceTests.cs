@@ -33,11 +33,11 @@ public sealed class CalculateCdbServiceTests
             grossAmount *= factor;
         }
 
-        grossAmount = Math.Round(grossAmount, 2, MidpointRounding.ToEven);
+        grossAmount = Math.Round(grossAmount, 2, MidpointRounding.AwayFromZero);
 
         decimal earnings = grossAmount - 1000m;
-        decimal taxAmount = Math.Round(earnings * 0.225m, 2, MidpointRounding.ToEven);
-        decimal netAmount = Math.Round(grossAmount - taxAmount, 2, MidpointRounding.ToEven);
+        decimal taxAmount = Math.Round(earnings * 0.225m, 2, MidpointRounding.AwayFromZero);
+        decimal netAmount = Math.Round(grossAmount - taxAmount, 2, MidpointRounding.AwayFromZero);
 
         Assert.Equal(grossAmount, response.GrossAmount);
         Assert.Equal(netAmount, response.NetAmount);
@@ -50,7 +50,7 @@ public sealed class CalculateCdbServiceTests
 
         CalculateCdbResponse response = _sut.Calculate(request);
 
-        Assert.Equal(Math.Round(response.GrossAmount, 2, MidpointRounding.ToEven), response.GrossAmount);
-        Assert.Equal(Math.Round(response.NetAmount, 2, MidpointRounding.ToEven), response.NetAmount);
+        Assert.Equal(Math.Round(response.GrossAmount, 2, MidpointRounding.AwayFromZero), response.GrossAmount);
+        Assert.Equal(Math.Round(response.NetAmount, 2, MidpointRounding.AwayFromZero), response.NetAmount);
     }
 }

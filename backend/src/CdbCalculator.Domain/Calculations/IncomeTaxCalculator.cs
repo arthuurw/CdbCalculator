@@ -16,8 +16,8 @@ public static class IncomeTaxCalculator
     {
         decimal taxRate = GetTaxRate(months);
         decimal earnings = grossResult.GrossAmount - grossResult.InitialAmount;
-        decimal taxAmount = Math.Round(earnings * taxRate, 2, MidpointRounding.ToEven);
-        decimal netAmount = Math.Round(grossResult.GrossAmount - taxAmount, 2, MidpointRounding.ToEven);
+        decimal taxAmount = Math.Round(earnings * taxRate, 2, MidpointRounding.AwayFromZero);
+        decimal netAmount = Math.Round(grossResult.GrossAmount - taxAmount, 2, MidpointRounding.AwayFromZero);
 
         return new CdbNetResult(
             grossResult.GrossAmount,

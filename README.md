@@ -1,145 +1,169 @@
-# CDB Investment Simulator
+# Simulador de Investimento CDB
 
-This project was developed as part of a backend technical challenge to simulate the gross and net return of a CDB (Certificado de Depósito Bancário) investment.
+Aplicação full-stack que simula o retorno bruto e líquido de um investimento em CDB (Certificado de Depósito Bancário).
 
-The application exposes an HTTP API that receives the initial investment amount and the investment term in months and returns the gross and net investment values.
+O backend expõe uma API HTTP que recebe o valor inicial do investimento e o prazo em meses e retorna os valores bruto e líquido. O frontend oferece uma interface moderna para interagir com a simulação.
 
-The solution follows a layered architecture separating the HTTP layer, application logic, and business rules.
+A solução segue uma arquitetura em camadas que separa a camada HTTP, a lógica de aplicação e as regras de negócio.
 
 ---
 
-# Project Structure
-
-The backend is organized as follows:
+# Estrutura do Projeto
 
 ```text
-backend
-├─ src
-│  ├─ CdbCalculator.Api
-│  ├─ CdbCalculator.Application
-│  └─ CdbCalculator.Domain
+CdbCalculator
+├─ backend
+│  ├─ src
+│  │  ├─ CdbCalculator.Api
+│  │  ├─ CdbCalculator.Application
+│  │  └─ CdbCalculator.Domain
+│  └─ tests
+│     └─ CdbCalculator.UnitTests
 │
-└─ tests
-   └─ CdbCalculator.UnitTests
+└─ frontend
+   └─ cdbcalculator
+      └─ src
+         ├─ app
+         │  ├─ core
+         │  │  └─ services
+         │  └─ features
+         │     └─ cdb-simulation
+         │        ├─ models
+         │        └─ pages
+         └─ environments
 ```
 
 ---
 
-## Layer Responsibilities
+## Responsabilidades das Camadas
 
 **CdbCalculator.Api**
 
-Responsible for:
+Responsável por:
 
-- HTTP endpoints
-- request routing
-- middleware configuration
-- Swagger documentation
-- dependency injection configuration
+- endpoints HTTP
+- roteamento de requisições
+- configuração de middlewares
+- documentação Swagger
+- configuração de injeção de dependência
+- configuração de CORS
 
 **CdbCalculator.Application**
 
-Responsible for:
+Responsável por:
 
-- application use cases
-- input validation
-- orchestration between layers
+- casos de uso da aplicação
+- validação de entrada
+- orquestração entre camadas
 
 **CdbCalculator.Domain**
 
-Responsible for:
+Responsável por:
 
-- financial calculations
-- core business rules
+- cálculos financeiros
+- regras de negócio centrais
 
 **CdbCalculator.UnitTests**
 
-Responsible for:
+Responsável por:
 
-- unit tests for domain and application layers
+- testes unitários das camadas de domínio e aplicação
 
 ---
 
-# Technologies
+# Tecnologias
 
 Backend:
 
 - .NET 8
 - ASP.NET Core Minimal API
 - Swagger / OpenAPI
-- xUnit
+- xUnit v3
 
-Code Quality:
+Frontend:
+
+- Angular 19
+- TypeScript 5.7
+- RxJS 7.8
+- Karma + Jasmine
+
+Qualidade de Código:
 
 - .NET analyzers
 - SonarLint
 
 ---
 
-# Business Rules
+# Regras de Negócio
 
-The system simulates a CDB investment based on the formula provided in the challenge.
+O sistema simula um investimento em CDB com base na fórmula fornecida no desafio.
 
-## Formula
+## Fórmula
 
 **VFₙ = VI × [1 + (CDI × TB)]ⁿ**
 
-Where:
+Onde:
 
-| Symbol | Description |
-|------|-------------|
-| VFₙ | Final value after n months |
-| VI | Initial investment value |
-| CDI | Monthly CDI rate |
-| TB | Bank percentage over CDI |
-| n | Number of months |
+| Símbolo | Descrição |
+|---------|-----------|
+| VFₙ | Valor final após n meses |
+| VI | Valor inicial do investimento |
+| CDI | Taxa CDI mensal |
+| TB | Percentual do banco sobre o CDI |
+| n | Número de meses |
 
-For this exercise the following fixed values are used:
+Para este exercício são utilizados os seguintes valores fixos:
 
-| Variable | Value |
-|---------|------|
-| CDI | 0.9% |
+| Variável | Valor |
+|----------|-------|
+| CDI | 0,9% ao mês |
 | TB | 108% |
 
-The investment grows using **monthly compound interest**, meaning the result of each month becomes the base for the next month. The formula is applied iteratively for each month.
+O investimento cresce com **juros compostos mensais**, ou seja, o resultado de cada mês serve de base para o mês seguinte. A fórmula é aplicada iterativamente a cada mês sem arredondamentos intermediários para preservar a precisão máxima.
+
+## Arredondamento
+
+Todos os valores monetários são arredondados para 2 casas decimais utilizando `MidpointRounding.AwayFromZero` (padrão comercial brasileiro — ABNT NBR 5891). O arredondamento é aplicado apenas ao resultado final, nunca aos valores intermediários durante o cálculo de juros compostos.
 
 ---
 
-# Income Tax Rules
+# Regras de Imposto de Renda
 
-Income tax is applied only to the **earnings portion** of the investment.
+O imposto de renda incide apenas sobre o **rendimento** do investimento (valor bruto menos valor inicial).
 
-| Investment Period | Tax Rate |
-|------------------|---------|
-| Up to 6 months | 22.5% |
-| Up to 12 months | 20% |
-| Up to 24 months | 17.5% |
-| Above 24 months | 15% |
+| Prazo do Investimento | Alíquota |
+|-----------------------|----------|
+| Até 6 meses | 22,5% |
+| De 7 a 12 meses | 20% |
+| De 13 a 24 meses | 17,5% |
+| Acima de 24 meses | 15% |
 
-Calculation:
+Cálculo:
 
-Earnings = GrossAmount - InitialAmount
-Tax = Earnings × TaxRate
-NetAmount = GrossAmount - Tax
+```
+Rendimento   = ValorBruto - ValorInicial
+Imposto      = arredondar(Rendimento × Alíquota, 2)
+ValorLíquido = ValorBruto - Imposto
+```
 
 ---
 
-# API Endpoint
+# Endpoint da API
 
-## Create CDB Simulation
+## Criar Simulação CDB
 
-POST /api/investments/cdb/simulations
+`POST /api/investments/cdb/simulations`
 
-Creates a simulation of a CDB investment using the provided initial amount and investment term.
+Cria uma simulação de investimento em CDB com base no valor inicial e no prazo informados.
 
-### Request Parameters
+### Parâmetros da Requisição
 
-| Field | Type | Description |
-|------|------|-------------|
-| initialAmount | decimal | Initial investment amount. Must be greater than zero |
-| months | integer | Investment duration in months. Must be greater than 1 |
+| Campo | Tipo | Restrição |
+|-------|------|-----------|
+| initialAmount | decimal | Deve ser no mínimo R$0,01 |
+| months | inteiro | Deve ser maior que 1 (mínimo 2 meses) |
 
-### Request Example
+### Exemplo de Requisição
 
 ```json
 {
@@ -148,225 +172,261 @@ Creates a simulation of a CDB investment using the provided initial amount and i
 }
 ```
 
-### Response Example
+### Exemplo de Resposta
 
 ```json
 {
-  "grossAmount": 1123.66,
-  "netAmount": 1098.93
+  "grossAmount": 1123.08,
+  "netAmount": 1098.46
 }
 ```
 
-| Field       | Description                     |
-| ----------- | ------------------------------- |
-| grossAmount | Total value before taxes        |
-| netAmount   | Final value after tax deduction |
+| Campo | Descrição |
+|-------|-----------|
+| grossAmount | Valor total antes dos impostos |
+| netAmount | Valor final após dedução do imposto |
 
 ---
 
-# Error Handling
+# Tratamento de Erros
 
-The API implements a global exception handling middleware.
+A API implementa um middleware de tratamento global de exceções.
 
-Errors are returned using the ProblemDetails format defined by RFC 7807.
+Os erros são retornados no formato ProblemDetails definido pela RFC 7807.
 
-Example error response:
+Exemplo de resposta de erro:
 
 ```json
 {
-  "title": "Invalid request",
+  "title": "Requisição inválida",
   "status": 400,
-  "detail": "Initial amount must be greater than zero.",
+  "detail": "O valor inicial deve ser no mínimo R$0,01.",
   "instance": "/api/investments/cdb/simulations"
 }
 ```
 
-Possible responses:
+Respostas possíveis:
 
-| Status Code | Description               |
-| ----------- | ------------------------- |
-| 400         | Validation error          |
-| 500         | Unexpected internal error |
-
----
-
-# API Documentation
-
-Swagger documentation is automatically generated and available only in the **Development** environment.
-
-After starting the application in Development mode, access:
-
-**https://localhost:{port}/swagger**
-
-## Swagger provides:
-
-- endpoint description
-- request and response schemas
-- example payloads
-- HTTP response codes
+| Código de Status | Descrição |
+|-----------------|-----------|
+| 200 | Resultado da simulação |
+| 400 | Erro de validação |
+| 500 | Erro interno inesperado |
 
 ---
 
-# Running the Application
+# Documentação da API
 
-## Requirements
+A documentação Swagger é gerada automaticamente e está disponível apenas no ambiente de **Desenvolvimento**.
 
-The following tools are required to run the backend locally:
+Após iniciar a aplicação em modo Development, acesse:
 
-| Tool | Version |
-|-----|--------|
-| .NET SDK | 8.0 or higher |
-| Git | Any recent version |
+```
+https://localhost:7190/swagger
+```
 
-Verify the .NET installation:
+O Swagger disponibiliza:
 
-**dotnet --version**
-
----
-
-## Clone the Repository
-
-Clone the repository locally:
-
-**git clone <repository-url>**
-
-Navigate to the root directory of the repository. All subsequent commands must be executed from this directory.
+- descrição dos endpoints
+- schemas de requisição e resposta
+- exemplos de payload
+- códigos de resposta HTTP
 
 ---
 
-## Restore Dependencies
+# Executando a Aplicação
 
-Restore all project dependencies:
+## Requisitos
 
-**dotnet restore**
+| Ferramenta | Versão |
+|------------|--------|
+| .NET SDK | 8.0 ou superior |
+| Node.js | 18.0 ou superior |
+| Angular CLI | 19.x |
+| Git | Qualquer versão recente |
 
----
+Para verificar se as ferramentas estão instaladas corretamente:
 
-## Build the Solution
-
-Compile the entire solution:
-
-**dotnet build**
-
-The build should complete without warnings or errors.
-
----
-
-## Run the API
-
-Start the Web API:
-
-**dotnet run --project backend/src/CdbCalculator.Api**
-
-Once the application starts, the API will be available locally.
-
-By default the API will be accessible at:
-
-**https://localhost:7190**
-
-Swagger documentation can be accessed at:
-
-**https://localhost:7190/swagger**
+```bash
+dotnet --version   # deve exibir 8.x.x ou superior
+node -v            # deve exibir v18.x.x ou superior
+ng version         # deve exibir Angular CLI 19.x
+```
 
 ---
 
-# Running Tests
+## Clonar o Repositório
 
-Execute the full unit test suite:
-
-**dotnet test**
-
-The tests validate the main business rules of the system, including:
-
-- CDB gross value calculation
-- income tax calculation
-- request validation
-- application service orchestration
+```bash
+git clone <url-do-repositorio>
+cd CdbCalculator
+```
 
 ---
 
-# Test Coverage
+## Configuração Inicial (apenas na primeira vez)
 
-Unit tests were implemented for the logical layers of the system.
+O backend utiliza HTTPS no desenvolvimento. É necessário confiar no certificado de desenvolvimento do .NET para que o navegador e o frontend aceitem a conexão sem erros:
 
-Coverage metrics:
+```bash
+dotnet dev-certs https --trust
+```
 
-| Metric | Result |
-|------|------|
-| Line Coverage | 96% |
-| Branch Coverage | 90% |
-
-Coverage reports were generated using:
-
-- Coverlet
-- ReportGenerator
-
-The achieved coverage satisfies the challenge requirement of **more than 90% coverage in the logical layer**.
+> Se aparecer uma janela pedindo confirmação, clique em **Sim**. Este passo é feito apenas uma vez por máquina.
 
 ---
 
-# Code Quality
+## Ordem de Inicialização
 
-The solution follows common backend development best practices, including:
+**O backend deve ser iniciado antes do frontend.** O frontend consome a API do backend — se o backend não estiver em execução, as simulações retornarão erro de conexão.
 
-- SOLID principles
-- layered architecture
-- dependency injection
-- centralized error handling
-- standardized HTTP responses
+### 1. Iniciar o Backend
 
-Static analysis tools used:
+Abra um terminal e execute:
+
+```bash
+dotnet run --project backend/src/CdbCalculator.Api
+```
+
+Aguarde até ver a mensagem indicando que a aplicação está ouvindo. A API estará disponível em:
+
+```
+https://localhost:7190
+```
+
+O Swagger estará disponível em:
+
+```
+https://localhost:7190/swagger
+```
+
+### 2. Iniciar o Frontend
+
+Abra um **segundo terminal** e execute:
+
+```bash
+cd frontend/cdbcalculator
+npm install
+ng serve
+```
+
+A aplicação estará disponível em:
+
+```
+http://localhost:4200
+```
+
+Acesse `http://localhost:4200` no navegador para utilizar o simulador.
+
+---
+
+# Executando os Testes
+
+## Backend
+
+Execute a partir da raiz do repositório:
+
+```bash
+dotnet test backend/tests/CdbCalculator.UnitTests
+```
+
+Os testes validam:
+
+- cálculo do valor bruto do CDB com juros compostos
+- cálculo do imposto de renda em todas as faixas
+- regras de validação de entrada
+- orquestração do serviço de aplicação
+
+## Frontend
+
+```bash
+cd frontend/cdbcalculator
+ng test --watch=false
+```
+
+---
+
+# Cobertura de Testes
+
+## Backend — 37 testes unitários
+
+| Camada | Testes |
+|--------|--------|
+| Domínio (GrossCdbCalculator) | 10 |
+| Domínio (IncomeTaxCalculator) | 11 |
+| Aplicação (CalculateCdbService) | 3 |
+| Aplicação (CalculateCdbValidator) | 9 |
+| Aplicação (DTOs) | 4 |
+
+Cobertura (camadas lógicas):
+
+| Métrica | Resultado |
+|---------|-----------|
+| Cobertura de Linhas | 97% |
+| Cobertura de Branches | 93% |
+
+## Frontend — 22 testes unitários
+
+| Classe | Testes |
+|--------|--------|
+| AppComponent | 2 |
+| CdbSimulationService | 4 |
+| HomeComponent | 16 |
+
+Cobertura frontend: **100%** (statements, branches, functions, lines).
+
+---
+
+# Qualidade de Código
+
+A solução segue boas práticas comuns de desenvolvimento backend, incluindo:
+
+- princípios SOLID
+- arquitetura em camadas
+- injeção de dependência
+- tratamento centralizado de erros
+- respostas HTTP padronizadas (RFC 7807)
+
+Ferramentas de análise estática:
 
 - .NET analyzers
 - SonarLint
 
-The project compiles with strict validation enabled:
-
-**dotnet build -warnaserror**
-
-This ensures that no compiler warnings remain in the solution.
-
 ---
 
-# Design Decisions
+# Decisões de Design
 
-Several design decisions were made to improve maintainability and clarity.
+## Arquitetura em Camadas
 
----
-
-## Layered Architecture
-
-The system separates HTTP concerns, application orchestration, and business logic into independent layers.
-
----
+O sistema separa as responsabilidades HTTP, orquestração de aplicação e lógica de negócio em camadas independentes.
 
 ## Minimal API
 
-Minimal API was used to keep the HTTP layer concise and focused.
+A Minimal API foi utilizada para manter a camada HTTP concisa e objetiva.
 
----
+## Standalone Components (Angular)
 
-## Dependency Injection
+O frontend utiliza standalone components do Angular 19 com providers funcionais, eliminando a necessidade de NgModules.
 
-Application services are registered through extension methods to keep the startup configuration organized.
+## Injeção de Dependência
 
----
+Os serviços de aplicação são registrados por meio de extension methods para manter a configuração de startup organizada. O `CalculateCdbService` é registrado como singleton pois não possui estado mutável.
 
-## Global Exception Handling
+## Tratamento Global de Exceções
 
-A custom middleware centralizes error handling and ensures consistent HTTP responses.
-
----
+Um middleware customizado centraliza o tratamento de erros e garante respostas HTTP consistentes em todos os endpoints.
 
 ## ProblemDetails
 
-Error responses follow the ProblemDetails format defined by RFC 7807.
+As respostas de erro seguem o formato ProblemDetails definido pela RFC 7807, garantindo um contrato de erro consistente e padronizado.
+
+## Arredondamento AwayFromZero
+
+Todo arredondamento monetário utiliza `MidpointRounding.AwayFromZero`, que corresponde ao padrão comercial brasileiro (ABNT NBR 5891) utilizado por instituições financeiras e pela Receita Federal.
 
 ---
 
-# Author
-
-This project was developed as part of a technical challenge.
+# Autor
 
 **Arthur Webster Moreira**
 arthurwebster01@gmail.com
